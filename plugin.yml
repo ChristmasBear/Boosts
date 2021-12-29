@@ -1,0 +1,38 @@
+name: Boosts
+author: christmasbear
+version: 0.1
+api-version: 1.16
+main: dev.christmasbear.Boosts.Boosts
+description: your mother moment lmfao!
+
+commands:
+  getmagekit:
+    usage: /<command>
+    description: Gives mage kid lmfao
+  gethealerkit:
+    usage: /<command>
+    description: Gives healer kit lmfao!
+  getsantakit:
+    usage: /<command>
+    description: gives santa kit lmfao! stop malding
+  getninjakit:
+    usage: /<command>
+    description: gives ninja kit lmfao! stop malding yua re autisc
+  getcompass:
+    usage: /<command>
+    description: test command
+  economy:
+    usage: /<command>
+    description: economy?!?!
+  openkitsmenu:
+    usage: /<command>
+    description: ok my guy
+  getalchemistkit:
+    usage: /<command>
+    description: mad
+  getsoulseekerkit:
+    usage: /<command>
+    description: dude
+  gethackerkit:
+    usage: /<command>
+    description: out of description ideas
