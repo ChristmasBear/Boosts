@@ -8,9 +8,6 @@ import dev.christmasbear.Boosts.Files.DataManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftTNTPrimed;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,15 +21,22 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class SoulSeekerEvents implements Listener {
     private final ArrayList<ArmorStand> souls = new ArrayList<>();
     private final Map<UUID, Double> dmgMultis = new HashMap<>();
+    private final Map<UUID, Long> mainCooldown = new HashMap<>();
+    private final Map<UUID, Long> altCooldown = new HashMap<>();
     public DataManager data = new DataManager(Boosts.getPlugin(Boosts.class));
     double baseDmg = data.getConfig().getDouble("kits.soulseeker.baseDmg");
     double multi = data.getConfig().getDouble("kits.soulseeker.dmgMulti");
     int heal = data.getConfig().getInt("kits.soulseeker.heal");
+    int mainCooldownDuration = data.getConfig().getInt("kits.soulseeker.mainCooldown");
+    int altCooldownDuration = data.getConfig().getInt("kits.soulseeker.altCooldown");
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -41,29 +45,32 @@ public class SoulSeekerEvents implements Listener {
         PlayerInventory inv = p.getInventory();
         if (inv.getItemInMainHand().equals(Commands.soulseekerKitItems[0])) {
             if (a.equals(Action.LEFT_CLICK_AIR)) {
-                Location point1 = p.getLocation();
-                Block block = p.getTargetBlock(null, 100);
-                Location point2 = block.getLocation();
-                double space = 0.5;
-                World world = point1.getWorld();
-                Validate.isTrue(point2.getWorld().equals(world), "Lines cannot be in different worlds!");
-                double distance = point1.distance(point2);
-                Vector p1 = point1.toVector();
-                Vector p2 = point2.toVector();
-                Vector vector = p2.clone().subtract(p1).normalize().multiply(space);
-                double length = 0;
-                for (; length < distance; p1.add(vector)) {
-                    world.spawnParticle(Particle.BLOCK_CRACK, p1.getX(), p1.getY() + 1, p1.getZ(), 1, 0, 0, 0, Material.REDSTONE_BLOCK.createBlockData());
-                    double radius = 1d;
-                    Location loc = p1.toLocation(world);
-                    List<Entity> near = world.getEntities();
-                    for(Entity e : near) {
-                        if(e.getLocation().distance(loc) <= radius) {
-                            if (!(e.equals(p))) {
-                                if (!(e instanceof Projectile || e instanceof Item || e instanceof ExperienceOrb || e instanceof CraftTNTPrimed)) {
-                                    Location eLoc = e.getLocation().subtract(0, 1, 0);
-                                    ((Damageable) e).damage(baseDmg * (dmgMultis.getOrDefault(p.getUniqueId(), 1d)));
-                                    if (e.isDead()) {
+                if (mainCooldown.containsKey(p.getUniqueId())) {
+                    long msLeft = ((mainCooldown.get(p.getUniqueId())) + mainCooldownDuration) - (System.currentTimeMillis());
+                    if (msLeft > 0) {
+                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "Ability on Cooldown! [" + msLeft + "ms]"));
+                        return;
+                    } else {
+                        mainCooldown.put(p.getUniqueId(), System.currentTimeMillis());
+                    }
+
+                } else {
+                    mainCooldown.put(p.getUniqueId(), System.currentTimeMillis());
+                }
+                Location loc = p.getLocation();
+                Vector direction = loc.getDirection();
+                for (double t=0; t < 100; t++) {
+                    double adjust = (p.isSneaking()) ? 0.25 : 0.5;
+                    loc.add(direction);
+                    loc.add(0, adjust, 0);
+                    loc.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc.getX(), loc.getY() + 1, loc.getZ(), 1, 0, 0, 0, Material.REDSTONE_BLOCK.createBlockData());
+                    for (Entity entity : loc.getWorld().getEntities()) {
+                        if (entity.getLocation().distance(loc) <= .875) {
+                            if (entity != p) {
+                                if (entity.getType().isAlive()) {
+                                    Location eLoc = entity.getLocation().subtract(0, 1, 0);
+                                    ((Damageable) entity).damage(baseDmg * (dmgMultis.getOrDefault(p.getUniqueId(), 1d)));
+                                    if (entity.isDead()) {
                                         ArmorStand armorStand = (ArmorStand) eLoc.getWorld().spawnEntity(eLoc, EntityType.ARMOR_STAND);
                                         armorStand.setVisible(false);
                                         armorStand.setInvulnerable(true);
@@ -75,48 +82,53 @@ public class SoulSeekerEvents implements Listener {
                             }
                         }
                     }
-                    length += space;
+                    loc.subtract(0, adjust, 0);
                 }
             } else if (a.equals(Action.RIGHT_CLICK_AIR) || a.equals(Action.RIGHT_CLICK_BLOCK)) {
-                Location point1 = p.getLocation();
-                Block block = p.getTargetBlock(null, 100);
-                Location point2 = block.getLocation();
-                double space = 0.5;
-                World world = point1.getWorld();
-                Validate.isTrue(point2.getWorld().equals(world), "Lines cannot be in different worlds!");
-                double distance = point1.distance(point2);
-                Vector p1 = point1.toVector();
-                Vector p2 = point2.toVector();
-                Vector vector = p2.clone().subtract(p1).normalize().multiply(space);
-                double length = 0;
-                for (; length < distance; p1.add(vector)) {
-                    double radius = 1d;
-                    Location loc = p1.toLocation(world);
-                    List<Entity> near = world.getEntities();
-                    for(Entity e : near) {
-                        if (e.getLocation().distance(loc) <= radius) {
-                            if (e instanceof ArmorStand && souls.contains((ArmorStand) e)) {
-                                if (p.isSneaking()) {
-                                    p.sendTitle("", ChatColor.RED + "❤", 5, 10, 5);
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, heal));
-                                } else {
-                                    p.sendTitle("", ChatColor.DARK_RED + "⚔", 5, 10, 5);
-                                    dmgMultis.put(p.getUniqueId(), (dmgMultis.containsKey(p.getUniqueId()) ? dmgMultis.get(p.getUniqueId()) * multi : multi));
-                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("" + ChatColor.RED + Math.floor(dmgMultis.get(p.getUniqueId())) + "x Dmg"));
-                                    Bukkit.getScheduler().scheduleSyncDelayedTask(dev.christmasbear.Boosts.Boosts.getPlugin(Boosts.class), new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dmgMultis.put(p.getUniqueId(), dmgMultis.get(p.getUniqueId()) / multi);
-                                            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("" + ChatColor.RED + Math.floor(dmgMultis.get(p.getUniqueId())) + "x Dmg"));
-                                        }
-                                    }, 200L);
+                if (altCooldown.containsKey(p.getUniqueId())) {
+                    long msLeft = ((altCooldown.get(p.getUniqueId())) + altCooldownDuration) - (System.currentTimeMillis());
+                    if (msLeft > 0) {
+                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "Ability on Cooldown! [" + msLeft + "ms]"));
+                        return;
+                    } else {
+                       altCooldown.put(p.getUniqueId(), System.currentTimeMillis());
+                    }
+
+                } else {
+                    altCooldown.put(p.getUniqueId(), System.currentTimeMillis());
+                }
+                Location loc = p.getLocation();
+                Vector direction = loc.getDirection();
+                for (double t=0; t < 100; t++) {
+                    double adjust = (p.isSneaking()) ? 0.25 : 0.5;
+                    loc.add(direction);
+                    loc.add(0, adjust, 0);
+                    for (Entity entity : loc.getWorld().getEntities()) {
+                        if (entity.getLocation().distance(loc) <= 1) {
+                            if (entity != p) {
+                                if (entity instanceof ArmorStand && souls.contains((ArmorStand) entity)) {
+                                    if (p.isSneaking()) {
+                                        p.sendTitle("", ChatColor.RED + "❤", 5, 10, 5);
+                                        p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, heal));
+                                    } else {
+                                        p.sendTitle("", ChatColor.DARK_RED + "⚔", 5, 10, 5);
+                                        dmgMultis.put(p.getUniqueId(), (dmgMultis.containsKey(p.getUniqueId()) ? dmgMultis.get(p.getUniqueId()) * multi : multi));
+                                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("" + ChatColor.RED + Math.round(dmgMultis.get(p.getUniqueId()) * 10) / 10 + "x Dmg [" + Math.round(baseDmg * dmgMultis.get(p.getUniqueId()) * 10) / 10 + "]"));
+                                        Bukkit.getScheduler().scheduleSyncDelayedTask(dev.christmasbear.Boosts.Boosts.getPlugin(Boosts.class), new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                dmgMultis.put(p.getUniqueId(), dmgMultis.get(p.getUniqueId()) / multi);
+                                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("" + ChatColor.RED + Math.round(dmgMultis.get(p.getUniqueId()) * 10) / 10 + "x Dmg [" + Math.round(baseDmg * dmgMultis.get(p.getUniqueId()) * 10) / 10 + "]"));
+                                            }
+                                        }, 200L);
+                                    }
+                                    entity.remove();
+                                    souls.remove(entity);
                                 }
-                                e.remove();
-                                souls.remove(e);
                             }
                         }
                     }
-                    length += space;
+                    loc.subtract(0, adjust, 0);
                 }
             }
         }

@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.*;
 
-public class  Boosts extends JavaPlugin implements Listener {
+public class Boosts extends JavaPlugin implements Listener {
 	public DataManager dataManager;
 
 	private final Commands commands = new Commands();
@@ -65,6 +65,7 @@ public class  Boosts extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new AlchemistEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new SoulSeekerEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new HackerEvents(), this);
+		this.getServer().getPluginManager().registerEvents(new SniperEvents(), this);
 		
 		ManaClass manaClass = new ManaClass();
 		for (Player online : Bukkit.getOnlinePlayers()) {
@@ -132,6 +133,13 @@ public class  Boosts extends JavaPlugin implements Listener {
 		lore = new ArrayList<String>();
 		lore.add("stfu my guy");
 		Commands.hackerKitItems = commands.kitCreator("Hacker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.BLACK_CONCRETE), "Hack Injection Tool", lore);
+
+		_rgb = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		rgb = new ArrayList<Integer>();
+		rgb.addAll(_rgb);
+		lore = new ArrayList<String>();
+		lore.add("stfu my guy");
+		Commands.sniperKitItems = commands.kitCreator("Sniper", rgb, "#000000", "#000000", new ItemStack(Material.BLACK_DYE), "Sniper's Sniper", lore);
 
 		ItemStack warpMenu = new ItemStack(Material.COMPASS);
 		ItemMeta menuMeta = warpMenu.getItemMeta();

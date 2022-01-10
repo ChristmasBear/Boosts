@@ -5,6 +5,8 @@ import com.mojang.authlib.properties.Property;
 import dev.christmasbear.Boosts.Boosts;
 import dev.christmasbear.Boosts.Commands;
 import dev.christmasbear.Boosts.SantaElves;
+import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_16_R3.ChatComponentText;
 import net.minecraft.server.v1_16_R3.EntityTNTPrimed;
 import net.minecraft.server.v1_16_R3.WorldServer;
 import org.bukkit.*;
@@ -46,7 +48,6 @@ public class SantaEvents implements Listener {
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDdlNTVmY2M4MDlhMmFjMTg2MWRhMmE2N2Y3ZjMxYmQ3MjM3ODg3ZDE2MmVjYTFlZGE1MjZhNzUxMmE2NDkxMCJ9fX0=",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmM4NjUyYmZkYjdhZGRlMTI4ZTdlYWNjNTBkMTZlYjlmNDg3YTMyMDliMzA0ZGUzYjk2OTdjZWJmMTMzMjNiIn19fQ==",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjU2MTJkYzdiODZkNzFhZmMxMTk3MzAxYzE1ZmQ5NzllOWYzOWU3YjFmNDFkOGYxZWJkZjgxMTU1NzZlMmUifX19",
-			
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZTJlOTFjNWQ2MmY2NzhhNmIyZDRiYmNhMmM1MjgzZTEzMTgyYzQzMjhkMGU4NzA2NGUxN2NlNmZmZmIifX19",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2RmZjk4NmY4OWE4ZWVhNmFlMmMzMjBjNjg4YzI0NjY2YzNhYmExYjc3MzhmZTg5Y2UzNmMyZmJmYTM2NiJ9fX0=",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzY2IxZGNiYjlmMTYxZWNmYTk1ODQ3M2IxYmIzYTY5NWJjNWYxMDM4OTFhMWJmOTgyNTEwNjlmYzM3M2QifX19",
@@ -76,7 +77,18 @@ public class SantaEvents implements Listener {
 					    public void run() {
 					        santaElves.killEntity();
 					    }
-					}, 200L);
+					}, 400L);
+
+					final float[] countdown = {20.0f};
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							if (countdown[0] > 0) {
+								countdown[0] -= 0.1f;
+								santaElves.setCustomName(new ChatComponentText(ChatColor.RED + "slave lol!" + " - [" + (Math.round(countdown[0] * 10.0f) / 10.0f) + "]"));
+							} else cancel();
+						}
+					}.runTaskTimer(Boosts.getPlugin(Boosts.class), 0L, 2L);
 				//}
 			} else if (e.getAction().equals(Action.LEFT_CLICK_AIR)) {
 				ArmorStand gift = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);

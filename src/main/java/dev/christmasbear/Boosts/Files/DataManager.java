@@ -62,6 +62,8 @@ public class DataManager {
         getConfig().set("kits.soulseeker.baseDmg", 2d);
         getConfig().set("kits.soulseeker.dmgMulti", 1.5d);
         getConfig().set("kits.soulseeker.heal", 1);
+        getConfig().set("kits.soulseeker.mainCooldown", 10);
+        getConfig().set("kits.soulseeker.altCooldown", 0);
         getConfig().set("kits.hacker.basePow", 1.5d);
         getConfig().set("kits.hacker.buffs.slow.dur", 200L);
         getConfig().set("kits.hacker.buffs.slow.lvl", 5);

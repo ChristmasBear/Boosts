@@ -36,3 +36,6 @@ commands:
   gethackerkit:
     usage: /<command>
     description: out of description ideas
+  getsniperkit:
+    usage: /<command>
+    description: pew pew pew

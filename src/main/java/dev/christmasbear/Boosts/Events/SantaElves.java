@@ -1,6 +1,5 @@
 package dev.christmasbear.Boosts.Events;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
@@ -11,13 +10,11 @@ public class SantaElves extends EntityZombie {
 		super(EntityTypes.ZOMBIE, ((CraftWorld) loc.getWorld()).getHandle());
 		
 		this.setPosition(loc.getX(), loc.getY(), loc.getZ());
-		
-		this.setCustomName(new ChatComponentText(ChatColor.RED + "slave lol!"));
+
 		this.setCustomNameVisible(true);
 		this.setHealth(50);
 		this.setBaby(true);
 		this.setInvulnerable(true);
-		this.getWorld().addEntity(this);
 	}
 	
 	@Override

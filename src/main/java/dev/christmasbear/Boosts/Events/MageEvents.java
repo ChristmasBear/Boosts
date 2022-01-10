@@ -2,10 +2,10 @@ package dev.christmasbear.Boosts.Events;
 
 import dev.christmasbear.Boosts.Commands;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftTNTPrimed;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -20,7 +20,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MageEvents implements Listener {
 	private final HashMap<Player, ArrayList<TNTPrimed>> tntList = new HashMap<Player, ArrayList<TNTPrimed>>();
@@ -50,40 +49,28 @@ public class MageEvents implements Listener {
 					
 					world.spawnParticle(Particle.CLOUD, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 25);
 				} else if ((action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK))) {
-				//if (manaClass.useMana(player, true, (double) 1)) {
-					Location point1 = player.getLocation();
-					Block block = player.getTargetBlock(null, 100);
-					Location point2 = block.getLocation();
-					double space = 0.5;
-					World world = point1.getWorld();
-				    Validate.isTrue(point2.getWorld().equals(world), "Lines cannot be in different worlds!");
-				    double distance = point1.distance(point2);
-				    Vector p1 = point1.toVector();
-				    Vector p2 = point2.toVector();
-				    Vector vector = p2.clone().subtract(p1).normalize().multiply(space);
-				    double length = 0;
-				    player.playSound(point1, Sound.BLOCK_SNOW_BREAK, 2.5f, 0);
-				    for (; length < distance; p1.add(vector)) {
-				        world.spawnParticle(Particle.DOLPHIN, p1.getX(), p1.getY() + 1, p1.getZ(), 20);
-				        double radius = 1d;
-				        Location loc = p1.toLocation(world);
-				        List<Entity> near = world.getEntities();
-				        for(Entity e : near) {
-				            if(e.getLocation().distance(loc) <= radius) {
-				            	if (!(e.equals(player))) {
-			            			if (!(e instanceof Projectile || e instanceof Item || e instanceof ExperienceOrb || e instanceof CraftTNTPrimed)) {
-			            				world.spawnParticle(Particle.END_ROD, e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ(), 10);
-				            			((Damageable) e).damage(100);
-				            			if (e.isDead()) {
-				            				//data.addCoins(player.getUniqueId(), 2);
-				            				player.sendMessage(ChatColor.GOLD + "+2 Coins");
-				            			}
-			            			}
-				            	}
-				            }
-				        }
-				        length += space;
-					//}
+				Location loc = player.getLocation();
+				Vector direction = loc.getDirection();
+				player.playSound(loc, Sound.BLOCK_SNOW_BREAK, 2.5f, 0);
+				for (double t=0; t < 100; t++) {
+					double adjust = (player.isSneaking()) ? 0.25 : 0.5;
+					loc.add(direction);
+					loc.add(0, adjust, 0);
+					loc.getWorld().spawnParticle(Particle.DOLPHIN, loc.getX(), loc.getY() + 1, loc.getZ(), 20);
+					for (Entity entity : loc.getWorld().getEntities()) {
+						if (entity.getLocation().distance(loc) <= .875) {
+							if (entity != player) {
+								if (entity.getType().isAlive()) {
+									loc.getWorld().spawnParticle(Particle.END_ROD, loc.getX(), loc.getY(), loc.getZ(), 10);
+									((Damageable) entity).damage(100);
+									if (entity.isDead()) {
+										player.sendMessage(ChatColor.GOLD + "+2 Coins");
+									}
+								}
+							}
+						}
+					}
+					loc.subtract(0, adjust, 0);
 				}
 			}
 		} /*else if (inv.getItemInMainHand().getType().equals(Material.TNT)) {

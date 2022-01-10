@@ -83,7 +83,7 @@ public class Commands implements Listener, CommandExecutor {
 		return new ItemStack[] {weapon, helmet, chestplate, leggings, boots};
 	}
 	
-	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit");
+	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit");
 	
 	public static ItemStack[] mageKitItems = new ItemStack[]{};
 	public static ItemStack[] healerKitItems = new ItemStack[]{};
@@ -92,6 +92,7 @@ public class Commands implements Listener, CommandExecutor {
 	public static ItemStack[] alchemistKitItems = new ItemStack[]{};
 	public static ItemStack[] soulseekerKitItems = new ItemStack[]{};
 	public static ItemStack[] hackerKitItems = new ItemStack[]{};
+	public static ItemStack[] sniperKitItems = new ItemStack[]{};
 	public static ItemStack warpMenu;
 	
 	public ItemStack[] getKit(String input) {
@@ -106,6 +107,8 @@ public class Commands implements Listener, CommandExecutor {
 				return soulseekerKitItems;
 			case "Hacker":
 				return hackerKitItems;
+			case "Sniper":
+				return sniperKitItems;
 		}
 			
 		return new ItemStack[] {new ItemStack(Material.AIR, 0)};
@@ -134,6 +137,8 @@ public class Commands implements Listener, CommandExecutor {
 				giveItems(p, soulseekerKitItems);
 			} else if (cmd.getName().equals(commands.get(8))) {
 				giveItems(p, hackerKitItems);
+			} else if (cmd.getName().equals(commands.get(9))) {
+				giveItems(p, sniperKitItems);
 			}
 		}
 		return false;
