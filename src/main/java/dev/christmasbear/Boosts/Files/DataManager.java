@@ -56,19 +56,25 @@ public class DataManager {
     }
 
     private void setDefaultConfig() {
-        getConfig().set("kits.wizard.baseDmg", 100d);
-        getConfig().set("kits.alchemist.baseDmg", 100d);
-        getConfig().set("kits.santa.baseDmg", 100d);
-        getConfig().set("kits.soulseeker.baseDmg", 2d);
-        getConfig().set("kits.soulseeker.dmgMulti", 1.5d);
-        getConfig().set("kits.soulseeker.heal", 1);
-        getConfig().set("kits.soulseeker.mainCooldown", 10);
-        getConfig().set("kits.soulseeker.altCooldown", 0);
-        getConfig().set("kits.hacker.basePow", 1.5d);
-        getConfig().set("kits.hacker.buffs.slow.dur", 200L);
-        getConfig().set("kits.hacker.buffs.slow.lvl", 5);
-        getConfig().set("kits.hacker.buffs.slow.amp", 2);
-        getConfig().set("kits.hacker.altCooldown", 500);
+
+        set("kits.wizard.baseDmg", 100d);
+        set("kits.alchemist.baseDmg", 100d);
+        set("kits.santa.baseDmg", 100d);
+        set("kits.soulseeker.baseDmg", 2d);
+        set("kits.soulseeker.dmgMulti", 1.5d);
+        set("kits.soulseeker.heal", 1);
+        set("kits.soulseeker.mainCooldown", 10);
+        set("kits.soulseeker.altCooldown", 0);
+        set("kits.hacker.basePow", 1.5d);
+        set("kits.hacker.buffs.slow.dur", 200L);
+        set("kits.hacker.buffs.slow.lvl", 5);
+        set("kits.hacker.buffs.slow.amp", 2);
+        set("kits.hacker.altCooldown", 500);
+        set("kits.sniper.baseDmg", 1d);
+        set("kits.sniper.headshotMulti", 100d);
+        set("kits.sniper.scopeMulti", 1.5d);
         saveConfig();
     }
+
+    public void set(String dir, Object val) { getConfig().set(dir, val); }
 }

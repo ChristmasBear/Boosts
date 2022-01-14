@@ -1,6 +1,8 @@
 package dev.christmasbear.Boosts.Events;
 
+import dev.christmasbear.Boosts.Boosts;
 import dev.christmasbear.Boosts.Commands;
+import dev.christmasbear.Boosts.Files.DataManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -17,8 +19,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 public class SniperEvents implements Listener {
-    double dmg = 1;
-    double headshotMulti = 100;
+    DataManager data = new DataManager(Boosts.getPlugin(Boosts.class));
+    private final Double dmg = data.getConfig().getDouble("kits.sniper.baseDmg");
+    private final Double headshotMulti = data.getConfig().getDouble("kits.hacker.scopeMulti");
+    private final Double scopeMulti = data.getConfig().getDouble("kits.sniper.scopeMulti");
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -30,16 +34,16 @@ public class SniperEvents implements Listener {
                     double adjust = (p.isSneaking()) ? 0.25 : 0.5;
                     loc.add(direction);
                     loc.add(0, adjust, 0);
-                    loc.getWorld().spawnParticle(Particle.DOLPHIN, loc.getX(), loc.getY() + 1, loc.getZ(), 20);
+                    loc.getWorld().spawnParticle(Particle.SQUID_INK, loc.getX(), loc.getY() + 1, loc.getZ(), 20);
                     for (Entity entity : loc.getWorld().getEntities()) {
                         if (entity.getLocation().distance(loc) <= .875) {
                             if (entity != p) {
                                 if (entity.getType().isAlive()) {
                                     if (entity.getLocation().add(0, (entity.getHeight() < 1) ? 0 : entity.getHeight()-1, 0).distance(loc) <= 0.75) {
                                         p.sendTitle("", ChatColor.RED + "◎", 5, 10, 5);
-                                        ((Damageable) entity).damage(dmg * headshotMulti * ((p.isSneaking()) ? 5 : 1));
+                                        ((Damageable) entity).damage(dmg * headshotMulti * ((p.isSneaking()) ? scopeMulti : 1));
                                     }
-                                    ((Damageable) entity).damage(dmg * ((p.isSneaking()) ? 5 : 1));
+                                    ((Damageable) entity).damage(dmg * ((p.isSneaking()) ? scopeMulti : 1));
                                 }
                             }
                         }
