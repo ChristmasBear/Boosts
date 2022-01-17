@@ -2,14 +2,17 @@ package dev.christmasbear.Boosts.Events;
 
 import dev.christmasbear.Boosts.Commands;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -92,14 +95,22 @@ public class AlchemistEvents implements Listener {
 				}
 			}
 			slowPotions.remove(e.getPotion());
-		} else if (blastPotions.contains((e.getPotion()))) {
+		}
+	}
+
+	@EventHandler
+	public void onHit(ProjectileHitEvent e) {
+		if (e instanceof ThrownPotion && blastPotions.contains((ThrownPotion) e)) {
 			e.setCancelled(true);
-			e.getHitBlock().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, e.getHitBlock().getLocation().add(0, 1, 0), 1);
-			for (LivingEntity entity : e.getAffectedEntities()) {
-				Vector vector = entity.getLocation().toVector().subtract(e.getHitBlock().getLocation().toVector());
-				entity.setVelocity(vector);
+			((ThrownPotion) e).getLocation().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, e.getHitBlock().getLocation().add(0, 1, 0), 1);
+			Location loc = ((ThrownPotion) e).getLocation();
+			for (Entity entity : loc.getWorld().getEntities()) {
+				if (entity.getLocation().distance(loc) <= 2) {
+					Vector vector = entity.getLocation().toVector().subtract(e.getHitBlock().getLocation().toVector());
+					entity.setVelocity(vector);
+				}
 			}
-			blastPotions.remove(e.getPotion());
+			blastPotions.remove((ThrownPotion) e);
 		}
 	}
 }

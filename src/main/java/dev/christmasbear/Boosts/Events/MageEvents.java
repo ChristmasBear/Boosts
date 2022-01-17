@@ -63,9 +63,9 @@ public class MageEvents implements Listener {
 								if (entity.getType().isAlive()) {
 									loc.getWorld().spawnParticle(Particle.END_ROD, loc.getX(), loc.getY(), loc.getZ(), 10);
 									((Damageable) entity).damage(100);
-									if (entity.isDead()) {
+									/*if (entity.isDead()) {
 										player.sendMessage(ChatColor.GOLD + "+2 Coins");
-									}
+									}*/
 								}
 							}
 						}

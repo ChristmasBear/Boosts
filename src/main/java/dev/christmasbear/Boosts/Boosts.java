@@ -47,7 +47,7 @@ public class Boosts extends JavaPlugin implements Listener {
 			this.getServer().getPluginManager().registerEvents(this, this);
 		}*/
 		for (String cmd : Commands.commands) {
-			getCommand(cmd).setExecutor(commands);
+			Objects.requireNonNull(getCommand(cmd)).setExecutor(commands);
 		}
 		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  ____                          _         \r\n"
 				+ " | __ )    ___     ___    ___  | |_   ___ \r\n"
@@ -66,6 +66,7 @@ public class Boosts extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new SoulSeekerEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new HackerEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new SniperEvents(), this);
+		this.getServer().getPluginManager().registerEvents(new AngelEvents(), this);
 		
 		ManaClass manaClass = new ManaClass();
 		for (Player online : Bukkit.getOnlinePlayers()) {
@@ -140,6 +141,13 @@ public class Boosts extends JavaPlugin implements Listener {
 		lore = new ArrayList<String>();
 		lore.add("stfu my guy");
 		Commands.sniperKitItems = commands.kitCreator("Sniper", rgb, "#000000", "#000000", new ItemStack(Material.BLACK_DYE), "Sniper's Sniper", lore);
+
+		_rgb = Arrays.asList(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+		rgb = new ArrayList<Integer>();
+		rgb.addAll(_rgb);
+		lore = new ArrayList<String>();
+		lore.add("stfu my guy");
+		Commands.angelKitItems = commands.kitCreator("Angel", rgb, "#ffffff", "#ffffff", new ItemStack(Material.WHITE_DYE), "Angel's Shotgun", lore);
 
 		ItemStack warpMenu = new ItemStack(Material.COMPASS);
 		ItemMeta menuMeta = warpMenu.getItemMeta();

@@ -83,7 +83,7 @@ public class Commands implements Listener, CommandExecutor {
 		return new ItemStack[] {weapon, helmet, chestplate, leggings, boots};
 	}
 	
-	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit");
+	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit", "getangelkit", "getkit");
 	
 	public static ItemStack[] mageKitItems = new ItemStack[]{};
 	public static ItemStack[] healerKitItems = new ItemStack[]{};
@@ -93,22 +93,26 @@ public class Commands implements Listener, CommandExecutor {
 	public static ItemStack[] soulseekerKitItems = new ItemStack[]{};
 	public static ItemStack[] hackerKitItems = new ItemStack[]{};
 	public static ItemStack[] sniperKitItems = new ItemStack[]{};
+	public static ItemStack[] angelKitItems = new ItemStack[]{};
 	public static ItemStack warpMenu;
 	
 	public ItemStack[] getKit(String input) {
+		input = input.toLowerCase();
 		switch (input) {
-			case "Mage":
+			case "mage":
 				return mageKitItems;
-			case "Santa":
+			case "santa":
 				return santaKitItems;
-			case "Alchemist":
+			case "alchemist":
 				return alchemistKitItems;
-			case "SoulSeeker":
+			case "soulseeker":
 				return soulseekerKitItems;
-			case "Hacker":
+			case "hacker":
 				return hackerKitItems;
-			case "Sniper":
+			case "sniper":
 				return sniperKitItems;
+			case "angel":
+				return angelKitItems;
 		}
 			
 		return new ItemStack[] {new ItemStack(Material.AIR, 0)};
@@ -139,6 +143,12 @@ public class Commands implements Listener, CommandExecutor {
 				giveItems(p, hackerKitItems);
 			} else if (cmd.getName().equals(commands.get(9))) {
 				giveItems(p, sniperKitItems);
+			} else if (cmd.getName().equals("getangelkit")) {
+				giveItems(p, angelKitItems);
+			} else if (cmd.getName().equals("getkit")) {
+				if (args.length > 0) {
+					giveItems(p, getKit(args[0]));
+				}
 			}
 		}
 		return false;
