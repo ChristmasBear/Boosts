@@ -39,5 +39,9 @@ commands:
   getsniperkit:
     usage: /<command>
     description: pew pew pew
+  getangelkit:
+    usage: /<command>
+    description: dude
   getkit:
+    usage: /<command>
     description: test get kit uto is so cool

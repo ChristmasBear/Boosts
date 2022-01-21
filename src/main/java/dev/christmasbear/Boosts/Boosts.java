@@ -47,7 +47,7 @@ public class Boosts extends JavaPlugin implements Listener {
 			this.getServer().getPluginManager().registerEvents(this, this);
 		}*/
 		for (String cmd : Commands.commands) {
-			Objects.requireNonNull(getCommand(cmd)).setExecutor(commands);
+			getCommand(cmd).setExecutor(commands);
 		}
 		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  ____                          _         \r\n"
 				+ " | __ )    ___     ___    ___  | |_   ___ \r\n"
