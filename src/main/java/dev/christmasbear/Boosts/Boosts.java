@@ -6,7 +6,6 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,16 +14,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Boosts extends JavaPlugin implements Listener {
 	public DataManager dataManager;
 
 	private final Commands commands = new Commands();
-	
-    public static Boosts getInstance;
-    
-	public final HashMap<UUID, Double> playerBank = new HashMap<>();
 	
 	/*public MySQL sql;
 	public SQLGetter data;*/
@@ -67,11 +64,12 @@ public class Boosts extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new HackerEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new SniperEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new AngelEvents(), this);
+		this.getServer().getPluginManager().registerEvents(new ElementalEvents(), this);
 		
-		ManaClass manaClass = new ManaClass();
+		/*ManaClass manaClass = new ManaClass();
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			manaClass.init(online);
-		}
+		}*/
 		
 		Commands commands = new Commands();
 		List<Integer> _rgb;
@@ -80,7 +78,7 @@ public class Boosts extends JavaPlugin implements Listener {
 		ItemStack weapon;
 		
 		_rgb = Arrays.asList(153, 255, 255, 187, 255, 255, 221, 255, 255, 255, 255, 255);
-		rgb = new ArrayList<Integer>();
+		rgb = new ArrayList<>();
 		rgb.addAll(_rgb);
 		lore = new ArrayList<String>();
 		lore.add("" + ChatColor.YELLOW + ChatColor.BOLD + "Left Click" + ChatColor.WHITE + " | " + ChatColor.AQUA + "Snow Laser" + ChatColor.WHITE + ": Fires an accurate snow beam that damages whatever comes in contact with it.");
@@ -94,12 +92,7 @@ public class Boosts extends JavaPlugin implements Listener {
 		lore = new ArrayList<String>();
 		lore.add("your mother moment");
 		Commands.healerKitItems = commands.kitCreator("Healer", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.PINK_DYE, 1), "is it yuor mother or you're mother lmfao maqd cuase bad", lore);
-		
-		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
-		rgb = new ArrayList<Integer>();
-		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
+
 		Commands.santaKitItems = commands.kitCreator("Santa", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.SNOW_BLOCK, 1), "stop talking kid", lore);
 		
 		_rgb = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -117,37 +110,32 @@ public class Boosts extends JavaPlugin implements Listener {
 		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		Commands.alchemistKitItems = commands.kitCreator("Alchemist", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.CYAN_STAINED_GLASS), "Alchemist's Potion Launcher", lore);
 
-		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
-		rgb = new ArrayList<Integer>();
-		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		Commands.soulseekerKitItems = commands.kitCreator("SoulSeeker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.POPPY), "SoulSeeker's Flower", lore);
 
-		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
-		rgb = new ArrayList<Integer>();
-		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		Commands.hackerKitItems = commands.kitCreator("Hacker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.BLACK_CONCRETE), "Hack Injection Tool", lore);
 
 		_rgb = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		Commands.sniperKitItems = commands.kitCreator("Sniper", rgb, "#000000", "#000000", new ItemStack(Material.BLACK_DYE), "Sniper's Sniper", lore);
 
 		_rgb = Arrays.asList(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
+		Commands.angelKitItems = commands.kitCreator("Angel", rgb, "#ffffff", "#ffffff", new ItemStack(Material.WHITE_DYE), "Angel's Shotgun", lore);
+
+		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
+		rgb = new ArrayList<Integer>();
+		rgb.addAll(_rgb);
 		lore = new ArrayList<String>();
 		lore.add("stfu my guy");
-		Commands.angelKitItems = commands.kitCreator("Angel", rgb, "#ffffff", "#ffffff", new ItemStack(Material.WHITE_DYE), "Angel's Shotgun", lore);
+		weapon = new ItemStack(Material.TIPPED_ARROW);
+		weaponMeta = (PotionMeta) weapon.getItemMeta();
+		weaponMeta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+		weapon.setItemMeta(weaponMeta);
+		Commands.elementalKitItems = commands.kitCreator("Elemental", rgb, "#eda0c0", "#ffffff", weapon, "Elemental Wand", lore);
 
 		ItemStack warpMenu = new ItemStack(Material.COMPASS);
 		ItemMeta menuMeta = warpMenu.getItemMeta();

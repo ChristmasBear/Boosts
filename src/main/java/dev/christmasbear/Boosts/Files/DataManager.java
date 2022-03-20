@@ -56,8 +56,9 @@ public class DataManager {
     }
 
     private void setDefaultConfig() {
-
         set("kits.wizard.baseDmg", 100d);
+        set("kits.wizard.boostPow", 2.5d);
+        set("kits.wizard.range", 100);
         set("kits.alchemist.baseDmg", 100d);
         set("kits.santa.baseDmg", 100d);
         set("kits.soulseeker.baseDmg", 2d);
@@ -65,6 +66,7 @@ public class DataManager {
         set("kits.soulseeker.heal", 1);
         set("kits.soulseeker.mainCooldown", 10);
         set("kits.soulseeker.altCooldown", 0);
+        set("kits.soulseeker.range", 100);
         set("kits.hacker.basePow", 1.5d);
         set("kits.hacker.buffs.slow.dur", 200L);
         set("kits.hacker.buffs.slow.lvl", 5);
@@ -73,6 +75,11 @@ public class DataManager {
         set("kits.sniper.baseDmg", 1d);
         set("kits.sniper.headshotMulti", 100d);
         set("kits.sniper.scopeMulti", 1.5d);
+        set("kits.sniper.range", 100);
+        set("kits.angel.baseDmg", 100d);
+        set("kits.angel.shotgunScaling.exp", 1.5d);
+        set("kits.angel.shotgunScaling.multi", 2d);
+        set("kits.angel.range", 100);
         saveConfig();
     }
 

@@ -5,6 +5,7 @@ import dev.christmasbear.Boosts.Commands;
 import dev.christmasbear.Boosts.Files.DataManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -18,11 +19,15 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import java.util.Objects;
+
 public class SniperEvents implements Listener {
     DataManager data = new DataManager(Boosts.getPlugin(Boosts.class));
     private final Double dmg = data.getConfig().getDouble("kits.sniper.baseDmg");
     private final Double headshotMulti = data.getConfig().getDouble("kits.hacker.scopeMulti");
     private final Double scopeMulti = data.getConfig().getDouble("kits.sniper.scopeMulti");
+    private final int range = data.getConfig().getInt("kits.sniper.range");
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -30,11 +35,11 @@ public class SniperEvents implements Listener {
             if (e.getAction().equals(Action.LEFT_CLICK_AIR)) {
                 Location loc = p.getLocation();
                 Vector direction = loc.getDirection();
-                for (double t=0; t < 100; t++) {
+                for (double t=0; t < range; t++) {
                     double adjust = (p.isSneaking()) ? 0.25 : 0.5;
                     loc.add(direction);
                     loc.add(0, adjust, 0);
-                    loc.getWorld().spawnParticle(Particle.SQUID_INK, loc.getX(), loc.getY() + 1, loc.getZ(), 20);
+                    Objects.requireNonNull(loc.getWorld()).spawnParticle(Particle.BLOCK_CRACK, loc.getX(), loc.getY() + 1, loc.getZ(), 1, 0, 0, 0, Material.STONE.createBlockData());
                     for (Entity entity : loc.getWorld().getEntities()) {
                         if (entity.getLocation().distance(loc) <= .875) {
                             if (entity != p) {

@@ -45,3 +45,6 @@ commands:
   getkit:
     usage: /<command>
     description: test get kit uto is so cool
+  getelementalkit:
+    usage: /<command>
+    description: ok dude

@@ -1,6 +1,8 @@
 package dev.christmasbear.Boosts.Events;
 
+import dev.christmasbear.Boosts.Boosts;
 import dev.christmasbear.Boosts.Commands;
+import dev.christmasbear.Boosts.Files.DataManager;
 import org.bukkit.*;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -23,7 +25,10 @@ import java.util.HashMap;
 
 public class MageEvents implements Listener {
 	private final HashMap<Player, ArrayList<TNTPrimed>> tntList = new HashMap<Player, ArrayList<TNTPrimed>>();
-	
+	DataManager data = new DataManager(Boosts.getPlugin(Boosts.class));
+	private final double baseDmg = data.getConfig().getDouble("kits.mage.baseDmg");
+	private final double boostPow = data.getConfig().getDouble("kits.mage.boostPow");
+	private final int range = data.getConfig().getInt("kits.mage.range");
 	//public SQLGetter data;
 	
 	//ManaClass manaClass = new ManaClass();
@@ -41,9 +46,9 @@ public class MageEvents implements Listener {
 			if ((action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK))) {
 				//if (manaClass.useMana(player, true, (double) 5)) {
 					if (player.isSneaking()) {
-						player.setVelocity(player.getLocation().getDirection().multiply(-2.5f));
+						player.setVelocity(player.getLocation().getDirection().multiply(-boostPow));
 					} else {
-						player.setVelocity(player.getLocation().getDirection().multiply(2.5f));
+						player.setVelocity(player.getLocation().getDirection().multiply(boostPow));
 					}
 					World world = player.getWorld();
 					
@@ -52,7 +57,7 @@ public class MageEvents implements Listener {
 				Location loc = player.getLocation();
 				Vector direction = loc.getDirection();
 				player.playSound(loc, Sound.BLOCK_SNOW_BREAK, 2.5f, 0);
-				for (double t=0; t < 100; t++) {
+				for (double t=0; t < range; t++) {
 					double adjust = (player.isSneaking()) ? 0.25 : 0.5;
 					loc.add(direction);
 					loc.add(0, adjust, 0);
@@ -62,7 +67,7 @@ public class MageEvents implements Listener {
 							if (entity != player) {
 								if (entity.getType().isAlive()) {
 									loc.getWorld().spawnParticle(Particle.END_ROD, loc.getX(), loc.getY(), loc.getZ(), 10);
-									((Damageable) entity).damage(100);
+									((Damageable) entity).damage(baseDmg);
 									/*if (entity.isDead()) {
 										player.sendMessage(ChatColor.GOLD + "+2 Coins");
 									}*/

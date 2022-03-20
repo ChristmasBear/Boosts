@@ -37,6 +37,7 @@ public class SoulSeekerEvents implements Listener {
     int heal = data.getConfig().getInt("kits.soulseeker.heal");
     int mainCooldownDuration = data.getConfig().getInt("kits.soulseeker.mainCooldown");
     int altCooldownDuration = data.getConfig().getInt("kits.soulseeker.altCooldown");
+    private final int range = data.getConfig().getInt("kits.soulseeker.range");
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -59,7 +60,7 @@ public class SoulSeekerEvents implements Listener {
                 }
                 Location loc = p.getLocation();
                 Vector direction = loc.getDirection();
-                for (double t=0; t < 100; t++) {
+                for (double t=0; t < range; t++) {
                     double adjust = (p.isSneaking()) ? 0.25 : 0.5;
                     loc.add(direction);
                     loc.add(0, adjust, 0);

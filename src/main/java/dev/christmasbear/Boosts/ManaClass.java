@@ -1,4 +1,4 @@
-package dev.christmasbear.Boosts;
+/*package dev.christmasbear.Boosts;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -74,3 +74,4 @@ public class ManaClass implements Listener {
 		init(e.getPlayer());
 	}
 }
+*/

@@ -83,7 +83,7 @@ public class Commands implements Listener, CommandExecutor {
 		return new ItemStack[] {weapon, helmet, chestplate, leggings, boots};
 	}
 	
-	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit", "getangelkit", "getkit");
+	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit", "getangelkit", "getkit", "getelementalkit");
 	
 	public static ItemStack[] mageKitItems = new ItemStack[]{};
 	public static ItemStack[] healerKitItems = new ItemStack[]{};
@@ -94,6 +94,7 @@ public class Commands implements Listener, CommandExecutor {
 	public static ItemStack[] hackerKitItems = new ItemStack[]{};
 	public static ItemStack[] sniperKitItems = new ItemStack[]{};
 	public static ItemStack[] angelKitItems = new ItemStack[]{};
+	public static ItemStack[] elementalKitItems = new ItemStack[]{};
 	public static ItemStack warpMenu;
 	
 	public ItemStack[] getKit(String input) {
@@ -113,6 +114,8 @@ public class Commands implements Listener, CommandExecutor {
 				return sniperKitItems;
 			case "angel":
 				return angelKitItems;
+			case "elemental":
+				return elementalKitItems;
 		}
 			
 		return new ItemStack[] {new ItemStack(Material.AIR, 0)};
@@ -149,6 +152,8 @@ public class Commands implements Listener, CommandExecutor {
 				if (args.length > 0) {
 					giveItems(p, getKit(args[0]));
 				}
+			} else if (cmd.getName().equals("getelementalkit")) {
+				giveItems(p, elementalKitItems);
 			}
 		}
 		return false;
