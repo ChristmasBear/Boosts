@@ -73,5 +73,4 @@ public class ManaClass implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		init(e.getPlayer());
 	}
-}
-*/
+}*/

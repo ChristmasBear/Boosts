@@ -21,9 +21,6 @@ commands:
   getcompass:
     usage: /<command>
     description: test command
-  economy:
-    usage: /<command>
-    description: economy?!?!
   openkitsmenu:
     usage: /<command>
     description: ok my guy
@@ -46,5 +43,14 @@ commands:
     usage: /<command>
     description: test get kit uto is so cool
   getelementalkit:
+    usage: /<command>
+    description: ok dude
+  getdasherkit:
+    usage: /<command>
+    description: ok dude
+  getcombokit:
+    usage: /<command>
+    description: ok dude
+  getwindbenderkit:
     usage: /<command>
     description: ok dude

@@ -83,7 +83,7 @@ public class Commands implements Listener, CommandExecutor {
 		return new ItemStack[] {weapon, helmet, chestplate, leggings, boots};
 	}
 	
-	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit", "getangelkit", "getkit", "getelementalkit");
+	public static final List<String> commands = Arrays.asList("getmagekit", "gethealerkit", "getsantakit", "getninjakit", "getcompass", "openkitsmenu", "getalchemistkit", "getsoulseekerkit", "gethackerkit", "getsniperkit", "getangelkit", "getkit", "getelementalkit", "getdasherkit", "getcombokit", "getwindbenderkit");
 	
 	public static ItemStack[] mageKitItems = new ItemStack[]{};
 	public static ItemStack[] healerKitItems = new ItemStack[]{};
@@ -95,6 +95,9 @@ public class Commands implements Listener, CommandExecutor {
 	public static ItemStack[] sniperKitItems = new ItemStack[]{};
 	public static ItemStack[] angelKitItems = new ItemStack[]{};
 	public static ItemStack[] elementalKitItems = new ItemStack[]{};
+	public static ItemStack[] dasherKitItems = new ItemStack[]{};
+	public static ItemStack[] comboKitItems = new ItemStack[]{};
+	public static ItemStack[] windBenderKitItems = new ItemStack[]{};
 	public static ItemStack warpMenu;
 	
 	public ItemStack[] getKit(String input) {
@@ -116,6 +119,12 @@ public class Commands implements Listener, CommandExecutor {
 				return angelKitItems;
 			case "elemental":
 				return elementalKitItems;
+			case "dasher":
+				return dasherKitItems;
+			case "combo":
+				return comboKitItems;
+			case "windbender":
+				return windBenderKitItems;
 		}
 			
 		return new ItemStack[] {new ItemStack(Material.AIR, 0)};
@@ -154,6 +163,14 @@ public class Commands implements Listener, CommandExecutor {
 				}
 			} else if (cmd.getName().equals("getelementalkit")) {
 				giveItems(p, elementalKitItems);
+			} else if (cmd.getName().equals("getdasherkit")) {
+				sender.sendMessage("yo");
+				System.out.println(Arrays.toString(dasherKitItems));
+				giveItems(p, dasherKitItems);
+			} else if (cmd.getName().equals("getcombokit")) {
+				giveItems(p, comboKitItems);
+			} else if (cmd.getName().equals("getwindbenderkit")) {
+				giveItems(p, windBenderKitItems);
 			}
 		}
 		return false;

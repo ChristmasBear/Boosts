@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Boosts extends JavaPlugin implements Listener {
@@ -44,15 +45,16 @@ public class Boosts extends JavaPlugin implements Listener {
 			this.getServer().getPluginManager().registerEvents(this, this);
 		}*/
 		for (String cmd : Commands.commands) {
-			getCommand(cmd).setExecutor(commands);
+			getCommand(cmd).setExecutor(new Commands());
 		}
+		//getCommand("getdasherkit").setExecutor(new Commands());
 		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  ____                          _         \r\n"
 				+ " | __ )    ___     ___    ___  | |_   ___ \r\n"
 				+ " |  _ \\   / _ \\   / _ \\  / __| | __| / __|\r\n"
 				+ " | |_) | | (_) | | (_) | \\__ \\ | |_  \\__ \\\r\n"
 				+ " |____/   \\___/   \\___/  |___/  \\__| |___/\r\n"
 				+ "                                          ");
-		
+		getServer().getPluginManager().registerEvents(this, this);
 		this.getServer().getPluginManager().registerEvents(new MageEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new HealerEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new SantaEvents(), this);
@@ -65,7 +67,9 @@ public class Boosts extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new SniperEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new AngelEvents(), this);
 		this.getServer().getPluginManager().registerEvents(new ElementalEvents(), this);
-		
+		this.getServer().getPluginManager().registerEvents(new DasherEvents(), this);
+		//this.getServer().getPluginManager().registerEvents(new ComboEvents(), this);
+		this.getServer().getPluginManager().registerEvents(new WindBenderEvents(), this);
 		/*ManaClass manaClass = new ManaClass();
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			manaClass.init(online);
@@ -74,68 +78,84 @@ public class Boosts extends JavaPlugin implements Listener {
 		Commands commands = new Commands();
 		List<Integer> _rgb;
 		ArrayList<Integer> rgb;
-		ArrayList<String> lore;
+		HashMap<String, String> lore = new HashMap<String, String>();
 		ItemStack weapon;
 		
 		_rgb = Arrays.asList(153, 255, 255, 187, 255, 255, 221, 255, 255, 255, 255, 255);
 		rgb = new ArrayList<>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("" + ChatColor.YELLOW + ChatColor.BOLD + "Left Click" + ChatColor.WHITE + " | " + ChatColor.AQUA + "Snow Laser" + ChatColor.WHITE + ": Fires an accurate snow beam that damages whatever comes in contact with it.");
-		lore.add("" + ChatColor.YELLOW + ChatColor.BOLD + "Right Click" + ChatColor.WHITE + " | " + ChatColor.AQUA + "Snow Leap" + ChatColor.WHITE + ": Leap in the direction you are looking at.");
-		lore.add("" + ChatColor.YELLOW + ChatColor.BOLD + "Right Click + Shift" + ChatColor.WHITE + " | " + ChatColor.AQUA + "Snow Leap" + ChatColor.WHITE + ": Leap in the direction opposite of where you are looking at.");
-		Commands.mageKitItems = commands.kitCreator("Wizard", rgb, "#ccffff", "#ffffff", new ItemStack(Material.END_ROD, 1), ChatColor.RED + "Candy " + ChatColor.WHITE + "Cane " + ChatColor.RED + "Wand", lore);
-		
+		lore.put("Left Click", "Fires an accurate snow beam that damages whatever comes in contact with it");
+		lore.put("Right Click", "Leaps in the direction you are looking at");
+		lore.put("Right Click + Shift", "Leaps in the direction opposite of where you are looking at");
+		Commands.mageKitItems = commands.kitCreator("Wizard", rgb, "#ccffff", "#ffffff", new ItemStack(Material.END_ROD, 1), ChatColor.RED + "Candy " + ChatColor.WHITE + "Cane " + ChatColor.RED + "Wand", Tools.loreColourer(lore));
+		lore.clear();
+		System.out.println(Arrays.toString(Commands.mageKitItems));
+
 		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("your mother moment");
-		Commands.healerKitItems = commands.kitCreator("Healer", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.PINK_DYE, 1), "is it yuor mother or you're mother lmfao maqd cuase bad", lore);
+		lore.put("not done yet", "");
+		Commands.healerKitItems = commands.kitCreator("Healer", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.PINK_DYE, 1), "is it yuor mother or you're mother lmfao maqd cuase bad", Tools.loreColourer(lore));
+		lore.clear();
+		Commands.santaKitItems = commands.kitCreator("Santa", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.SNOW_BLOCK, 1), "stop talking kid", Tools.loreColourer(lore));
+		lore.clear();
 
-		Commands.santaKitItems = commands.kitCreator("Santa", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.SNOW_BLOCK, 1), "stop talking kid", lore);
-		
 		_rgb = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		weapon = new ItemStack(Material.TIPPED_ARROW);
 		PotionMeta weaponMeta = (PotionMeta) weapon.getItemMeta();
 		weaponMeta.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
 		weaponMeta.addEnchant(Enchantment.DAMAGE_ALL, 69, true);
 		weapon.setItemMeta(weaponMeta);
-		Commands.ninjaKitItems = commands.kitCreator("Ninja", rgb, "#000000", "#808080", weapon, "stop talking kid", lore);
-		
+		Commands.ninjaKitItems = commands.kitCreator("Ninja", rgb, "#000000", "#808080", weapon, "stop talking kid", Tools.loreColourer(lore));
+		lore.clear();
+
 		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		Commands.alchemistKitItems = commands.kitCreator("Alchemist", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.CYAN_STAINED_GLASS), "Alchemist's Potion Launcher", lore);
+		Commands.alchemistKitItems = commands.kitCreator("Alchemist", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.CYAN_STAINED_GLASS), "Alchemist's Potion Launcher", Tools.loreColourer(lore));
+		lore.clear();
 
-		Commands.soulseekerKitItems = commands.kitCreator("SoulSeeker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.POPPY), "SoulSeeker's Flower", lore);
+		Commands.soulseekerKitItems = commands.kitCreator("SoulSeeker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.POPPY), "SoulSeeker's Flower", Tools.loreColourer(lore));
+		lore.clear();
 
-		Commands.hackerKitItems = commands.kitCreator("Hacker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.BLACK_CONCRETE), "Hack Injection Tool", lore);
+		Commands.hackerKitItems = commands.kitCreator("Hacker", rgb, "#eda0c0", "#ffffff", new ItemStack(Material.BLACK_CONCRETE), "Hack Injection Tool", Tools.loreColourer(lore));
+		lore.clear();
 
 		_rgb = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		Commands.sniperKitItems = commands.kitCreator("Sniper", rgb, "#000000", "#000000", new ItemStack(Material.BLACK_DYE), "Sniper's Sniper", lore);
+		Commands.sniperKitItems = commands.kitCreator("Sniper", rgb, "#000000", "#000000", new ItemStack(Material.BLACK_DYE), "Sniper's Sniper", Tools.loreColourer(lore));
+		lore.clear();
 
 		_rgb = Arrays.asList(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		Commands.angelKitItems = commands.kitCreator("Angel", rgb, "#ffffff", "#ffffff", new ItemStack(Material.WHITE_DYE), "Angel's Shotgun", lore);
+		Commands.angelKitItems = commands.kitCreator("Angel", rgb, "#ffffff", "#ffffff", new ItemStack(Material.WHITE_DYE), "Angel's Shotgun", Tools.loreColourer(lore));
+		lore.clear();
 
 		_rgb = Arrays.asList(229, 113, 162, 237, 160, 192, 245, 206, 222, 253, 253, 253);
 		rgb = new ArrayList<Integer>();
 		rgb.addAll(_rgb);
-		lore = new ArrayList<String>();
-		lore.add("stfu my guy");
 		weapon = new ItemStack(Material.TIPPED_ARROW);
 		weaponMeta = (PotionMeta) weapon.getItemMeta();
 		weaponMeta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
 		weapon.setItemMeta(weaponMeta);
-		Commands.elementalKitItems = commands.kitCreator("Elemental", rgb, "#eda0c0", "#ffffff", weapon, "Elemental Wand", lore);
+		Commands.elementalKitItems = commands.kitCreator("Elemental", rgb, "#eda0c0", "#ffffff", weapon, "Elemental Wand", Tools.loreColourer(lore));
+
+		_rgb = Arrays.asList(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+		rgb = new ArrayList<Integer>();
+		rgb.addAll(_rgb);
+		Commands.dasherKitItems = commands.kitCreator("Dasher", rgb, "#ffffff", "#ffffff", new ItemStack(Material.OXEYE_DAISY), "Dasher", Tools.loreColourer(lore));
+		lore.clear();
+
+		_rgb = Arrays.asList(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+		rgb = new ArrayList<Integer>();
+		rgb.addAll(_rgb);
+		Commands.windBenderKitItems = commands.kitCreator("WindBender", rgb, "#ffffff", "#ffffff", new ItemStack(Material.OXEYE_DAISY), "Windsheesh", Tools.loreColourer(lore));
+		lore.clear();
+
 
 		ItemStack warpMenu = new ItemStack(Material.COMPASS);
 		ItemMeta menuMeta = warpMenu.getItemMeta();

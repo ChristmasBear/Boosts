@@ -54,56 +54,31 @@ public class ElementalEvents implements Listener {
                         for (Entity entity : loc.getWorld().getEntities()) {
                             if (entity.getLocation().distance(loc) <= .875) {
                                 if (entity != p && entity.getType().isAlive()) {
-                                    entityElements.computeIfAbsent(entity.getUniqueId(), k -> new ArrayList<>());
-                                    if (!entityElements.get(entity.getUniqueId()).contains(true)) entityElements.get(entity.getUniqueId()).add(true);
-                                    displayElements(entity);
-                                    if (entityElements.get(entity.getUniqueId()).contains(false)) {
-                                        Location newRndLocation = entity.getLocation().add(Math.random() - 0.5, Math.random() - 1.5, Math.random() - 0.5);
-                                        ArmorStand reaction = entity.getWorld().spawn(newRndLocation, ArmorStand.class);
-                                        reaction.setGravity(false);
-                                        reaction.setInvulnerable(true);
-                                        reaction.setInvisible(true);
-                                        reaction.setCanPickupItems(false);
-                                        reaction.setCustomNameVisible(true);
-                                        reaction.setCustomName("" + ChatColor.GOLD + ChatColor.BOLD + "Melt");
-                                        Bukkit.getScheduler().scheduleSyncDelayedTask(Boosts.getPlugin(Boosts.class), reaction::remove, 30L);
-
-                                        ((Damageable) entity).damage(5 * 10);
-                                    } else {
-                                        ((Damageable) entity).damage(5);
-                                    }
+                                    applyElement(entity, true);
                                 }
                             }
                         }
                         loc.subtract(0, adjust, 0);
                     }
-                } else {
-                    Location loc = p.getLocation();
-                    Vector direction = loc.getDirection();
-                    for (double t = 0; t < 10; t++) {
-                        double adjust = (p.isSneaking()) ? 0.25 : 0.5;
-                        loc.add(direction);
-                        loc.add(0, adjust, 0);
-
-                        Vector offset = p.getLocation().getDirection().clone().multiply(Math.cos(90) * 1);
-                        offset.setY(Math.sin(90) * 1);
-                        loc.add(offset);
-                        loc.getWorld().spawnParticle(Particle.FLAME, loc.getX(), loc.getY()+1, loc.getZ(), 1, 0.05, 0.05, 0.05, 0);
-                        loc.subtract(offset);
-
-                        /*float radius = 1f;
-                        float angle = 0f;
-                        float angleInc = 0.5f;
-                        for (;angle < Math.PI * 2 * radius / angleInc; angle += angleInc) {
-                            double x = (radius * Math.sin(angle));
-                            double z = (radius * Math.cos(angle));
-                            Vector offset = p.getLocation().getDirection().clone().multiply(Math.cos(angle) * radius);
-                            offset.setY(Math.sin(angle) * radius);
-                            loc.add(offset);
-                            loc.getWorld().spawnParticle(Particle.FLAME, loc.getX()+x, loc.getY()+1, loc.getZ()+z, 1, 0.05, 0.05, 0.05, 0);
-                            loc.subtract(offset);
-                        }*/
-
+                }
+            } else {
+                Location loc = p.getLocation();
+                for (double i = 0; i <= Math.PI; i += Math.PI / 10) {
+                    double radius = Math.sin(i) * 2;
+                    double y = Math.cos(i) * 2;
+                    for (double j = 0; j < Math.PI * 2; j += Math.PI / 10) {
+                        double x = Math.cos(j) * radius;
+                        double z = Math.sin(j) * radius;
+                        loc.add(x, y, z);
+                        loc.getWorld().spawnParticle(Particle.FLAME, loc.getX(), loc.getY() + 1, loc.getZ(), 1, 0, 0, 0, 0);
+                        loc.subtract(x, y, z);
+                        for (Entity entity : loc.getWorld().getEntities()) {
+                            if (entity.getLocation().distance(p.getLocation()) <= 2.5) {
+                                if (entity != p && entity.getType().isAlive()) {
+                                    applyElement(entity, true);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -168,7 +143,7 @@ public class ElementalEvents implements Listener {
             fallingIce.remove(e.getEntity());
             for (Entity entity : e.getEntity().getWorld().getNearbyEntities(e.getEntity().getLocation(), 1, 1, 1)) {
                 if (entity.getType().isAlive() && !(entity instanceof Player)) {
-                    applyCryo(entity);
+                    applyElement(entity, false);
                 }
             }
         } else if (e.getEntity() instanceof FallingBlock && circleFallingIce.containsKey(e.getEntity())) {
@@ -177,7 +152,7 @@ public class ElementalEvents implements Listener {
             for (Entity entity : e.getEntity().getWorld().getEntities()) {
                 if (entity.getLocation().distance(circleFallingIce.get(e.getEntity())) <= radius+0.25) {
                     if (entity.getType().isAlive() && !(entity instanceof Player)) {
-                        applyCryo(entity);
+                        applyElement(entity, false);
                     }
                 }
             }
@@ -185,11 +160,11 @@ public class ElementalEvents implements Listener {
         }
     }
 
-    private void applyCryo(Entity entity) {
+    private void applyElement(Entity entity, boolean pyro) {
         entityElements.computeIfAbsent(entity.getUniqueId(), k -> new ArrayList<>());
-        if (!entityElements.get(entity.getUniqueId()).contains(false)) entityElements.get(entity.getUniqueId()).add(false);
+        if (!entityElements.get(entity.getUniqueId()).contains(pyro)) entityElements.get(entity.getUniqueId()).add(pyro);
         displayElements(entity);
-        if (entityElements.get(entity.getUniqueId()).contains(true)) {
+        if (entityElements.get(entity.getUniqueId()).contains(!pyro)) {
             Location newRndLocation = entity.getLocation().add(Math.random() - 0.5, Math.random() - 1.5, Math.random() - 0.5);
             ArmorStand reaction = entity.getWorld().spawn(newRndLocation, ArmorStand.class);
             reaction.setGravity(false);
